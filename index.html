@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Global Asset - Mobile Dashboard</title>
+    <style>
+        :root {
+            --primary: #0052ff; --accent: #f0b90b; --danger: #df2020;
+            --success: #16a34a; --bg: #f1f5f9; --text: #0f172a;
+        }
+
+        body { 
+            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh;
+        }
+
+        /* HEADER MOBILE FIXED */
+        .mobile-header {
+            background: var(--primary); color: white; padding: 15px; text-align: center;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* SECTION PROFIL MUPENZI (SCROLLABLE) */
+        .main-content { flex: 1; overflow-y: auto; padding: 15px; }
+
+        .profile-card {
+            background: white; border-radius: 20px; padding: 20px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0;
+        }
+        .avatar { 
+            width: 70px; height: 70px; background: var(--primary); color: white; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 1.8rem; margin: 0 auto 10px; font-weight: bold;
+        }
+        .zodiac { background: var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .stat-item { background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #edf2f7; }
+        .stat-label { font-size: 0.6rem; color: #64748b; text-transform: uppercase; }
+        .stat-value { font-size: 0.85rem; font-weight: bold; color: var(--text); }
+
+        .withdraw-zone {
+            background: #fffbeb; border: 2px dashed var(--accent); border-radius: 15px;
+            padding: 20px; text-align: center; margin-bottom: 25px;
+        }
+        .btn { 
+            width: 100%; padding: 15px; border-radius: 12px; font-weight: bold; 
+            border: none; font-size: 1rem; cursor: pointer; transition: 0.2s;
+        }
+        .btn-withdraw { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(22,163,74,0.3); }
+        
+        /* LISTE INVESTISSEURS (MOSAÏQUE MOBILE) */
+        .investor-list { margin-top: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .user-mini-card {
+            background: white; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;
+            position: relative; font-size: 0.8rem;
+        }
+        .user-mini-card.active { border: 2px solid var(--success); background: #f0fdf4; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+        /* MODAL RESPONSIVE */
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content { background: white; width: 100%; border-radius: 25px; padding: 25px; text-align: center; }
+
+    </style>
+</head>
+<body>
+
+    <div class="mobile-header">
+        <div style="font-weight: bold; letter-spacing: 1px;">GLOBAL ASSET DUBAI</div>
+        <div style="font-size: 0.6rem; opacity: 0.8;">SERVEUR SÉCURISÉ HTTPS</div>
+    </div>
+
+    <div class="main-content">
+        <!-- PROFIL MUPENZI -->
+        <div class="profile-card">
+            <div class="avatar">MA</div>
+            <h2 style="margin: 5px 0;">Mupenzi Aron</h2>
+            <div class="zodiac">♉ TAUREAU (GOMA, RDC)</div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">ID Client</div>
+                    <div class="stat-value">#210-987-PRO</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Investissement</div>
+                    <div class="stat-value">210.00 $</div>
+                </div>
+            </div>
+
+            <div style="text-align: left; font-size: 0.8rem; color: #64748b;">
+                <div><b>📞 Airtel :</b> +243 974736700</div>
+                <div><b>📧 Email :</b> aronmupenzi@gmail.com</div>
+            </div>
+        </div>
+
+        <!-- ZONE DE RETRAIT -->
+        <div class="withdraw-zone">
+            <div style="font-size: 0.7rem; font-weight: bold; color: var(--danger); margin-bottom: 5px;">⚠️ TRANSFERT BLOQUÉ</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--success); margin-bottom: 5px;">2 282.70 $</div>
+            <p style="font-size: 0.75rem; color: #4a5568;">Réglez les frais de transmission (<b>558.00 $</b>) pour débloquer votre argent immédiatement.</p>
+            <button class="btn btn-withdraw" onclick="showTransferAlert()">RECEVOIR MES FONDS</button>
+        </div>
+
+        <!-- LISTE GLOBALE -->
+        <div class="investor-list">
+            <h4 style="margin-bottom: 10px;">Registre International (48)</h4>
+            <div class="grid" id="investor-grid">
+                <!-- MUPENZI -->
+                <div class="user-mini-card active" onclick="showUser('Mupenzi Aron', 'RDC', '2 282$', 'EN ATTENTE')">
+                    <div style="font-weight: bold;">M. Aron</div>
+                    <div style="color: var(--danger); font-size: 0.7rem;">● En attente</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="btn" style="background:#64748b; color:white; margin-top:20px; font-size:0.8rem; opacity:0.6;" onclick="alert('Accès réservé aux administrateurs de Dubaï.')">NOUVEL INVESTISSEMENT (ADMIN)</button>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal" id="userModal" onclick="this.style.display='none'">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3 id="modalName"></h3>
+            <p id="modalOrigin" style="color: #64748b;"></p>
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 15px; margin: 15px 0;">
+                <div id="modalGain" style="font-size: 1.2rem; font-weight: bold; color: var(--success);"></div>
+                <div id="modalStatus" style="font-size: 0.8rem; font-weight: bold; margin-top: 5px;"></div>
+            </div>
+            <button class="btn" style="background: var(--primary); color: white;" onclick="document.getElementById('userModal').style.display='none'">FERMER</button>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('investor-grid');
+        const firstNames = ["J. Smith", "K. Müller", "J. Dupont", "M. Rossi", "S. Wilson", "W. Chen", "E. García", "I. Ivanov"];
+        const countries = ["USA", "FRA", "GER", "ITA", "UK", "CHN", "ESP", "RUS"];
+
+        for(let i=1; i<48; i++) {
+            const nom = firstNames[i % firstNames.length];
+            const pays = countries[i % countries.length];
+            const gain = (Math.floor(Math.random() * 50000) + 15000).toLocaleString() + "$";
+            
+            const card = document.createElement('div');
+            card.className = 'user-mini-card';
+            card.onclick = () => showUser(nom, pays, gain, "PAYÉ & CLÔTURÉ");
+            card.innerHTML = `
+                <div style="font-weight: bold;">${nom}</div>
+                <div style="color: var(--success); font-size: 0.7rem;">● ${pays} (Payé)</div>
+            `;
+            grid.appendChild(card);
+        }
+
+        function showUser(name, origin, gain, status) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalOrigin').innerText = "Origine : " + origin;
+            document.getElementById('modalGain').innerText = "Gain : " + gain;
+            document.getElementById('modalStatus').innerText = "Statut : " + status;
+            document.getElementById('modalStatus').style.color = (status.includes("ATTENTE")) ? "red" : "green";
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        function showTransferAlert() {
+            alert("🔒 SÉCURITÉ DUBAÏ\n\nBénéficiaire : MUPENZI ARON\nMontant : 2 282.70 $\n\nLe versement des frais (558$) est requis pour débloquer le signal satellite de paiement vers Airtel Money.");
+        }
+    </script>
+</body>
+</html>
