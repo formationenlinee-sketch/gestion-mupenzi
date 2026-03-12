@@ -100,12 +100,17 @@
             </div>
         </div>
 
-        <!-- ZONE DE RETRAIT -->
+        <!-- ZONE DE RETRAIT MISE À JOUR -->
         <div class="withdraw-zone">
-            <div style="font-size: 0.7rem; font-weight: bold; color: var(--danger); margin-bottom: 5px;">⚠️ TRANSFERT BLOQUÉ</div>
+            <div style="font-size: 0.7rem; font-weight: bold; color: var(--danger); margin-bottom: 5px;">⚠️ PROTOCOLE DE RÉDUCTION ACCORDÉ (-43%)</div>
             <div style="font-size: 1.5rem; font-weight: 800; color: var(--success); margin-bottom: 5px;">2 282.70 $</div>
-            <p style="font-size: 0.75rem; color: #4a5568;">Réglez les frais de transmission (<b>558.00 $</b>) pour débloquer votre argent immédiatement.</p>
+            <p style="font-size: 0.75rem; color: #4a5568;">Réglez les frais réduits de <span style="text-decoration: line-through; opacity: 0.6;">558.00 $</span> <b style="color: var(--primary);">318.00 $</b> pour libérer vos fonds immédiatement.</p>
+            
             <button class="btn btn-withdraw" onclick="showTransferAlert()">RECEVOIR MES FONDS</button>
+            
+            <p style="font-size: 0.65rem; color: #64748b; margin-top: 10px; font-style: italic;">
+                Note : Les 240 $ de remise exceptionnelle seront réajustés lors de votre prochain cycle d'investissement pour garantir la pérennité du partenariat.
+            </p>
         </div>
 
         <!-- LISTE GLOBALE -->
@@ -161,13 +166,13 @@
             document.getElementById('modalOrigin').innerText = "Origine : " + origin;
             document.getElementById('modalGain').innerText = "Gain : " + gain;
             document.getElementById('modalStatus').innerText = "Statut : " + status;
-            document.getElementById('modalStatus').style.color = (status.includes("ATTENTE")) ? "red" : "green";
             document.getElementById('userModal').style.display = 'flex';
         }
 
         function showTransferAlert() {
-            alert("🔒 SÉCURITÉ DUBAÏ\n\nBénéficiaire : MUPENZI ARON\nMontant : 2 282.70 $\n\nLe versement des frais (558$) est requis pour débloquer le signal satellite de paiement vers Airtel Money.");
+            alert("VOTRE DOSSIER #210-987-PRO EST EN ATTENTE DU RÈGLEMENT DE 318.00 $.\n\nUne fois le paiement validé, les 2 282.70 $ seront libérés automatiquement.");
         }
     </script>
+
 </body>
 </html>
