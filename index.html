@@ -1,5 +1,3 @@
-Voici le code mis à jour. J'ai ajouté 3 personnes spécifiques en attente juste après Mupenzi Aron dans la liste, tout en conservant le reste de la liste avec le statut "Payé".
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -54,9 +52,10 @@ Voici le code mis à jour. J'ai ajouté 3 personnes spécifiques en attente just
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .user-mini-card {
             background: white; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0;
-            position: relative; font-size: 0.8rem;
+            position: relative; font-size: 0.8rem; cursor: pointer;
         }
-        .user-mini-card.active { border: 2px solid var(--danger); background: #fff1f2; }
+        .user-mini-card.active { border: 1px solid var(--danger); background: #fff1f2; }
+        .user-mini-card.paid { border: 1px solid var(--success); background: #f0fdf4; }
 
         .modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -106,29 +105,12 @@ Voici le code mis à jour. J'ai ajouté 3 personnes spécifiques en attente just
         <div class="investor-list">
             <h4 style="margin-bottom: 10px;">Registre International (48)</h4>
             <div class="grid" id="investor-grid">
-                <!-- 1. MUPENZI ARON -->
+                <!-- 1. MUPENZI ARON (GARDÉ INTACT) -->
                 <div class="user-mini-card active" onclick="showUser('Mupenzi Aron', 'RDC', '2 282.70 $', 'EN ATTENTE')">
                     <div style="font-weight: bold;">M. Aron</div>
                     <div style="color: var(--danger); font-size: 0.7rem;">● En attente</div>
                 </div>
-
-                <!-- 2. NOUVELLE PERSONNE EN ATTENTE -->
-                <div class="user-mini-card active" onclick="showUser('Jean-Paul K.', 'RDC', '1 450.00 $', 'EN ATTENTE')">
-                    <div style="font-weight: bold;">J.P. K.</div>
-                    <div style="color: var(--danger); font-size: 0.7rem;">● En attente</div>
-                </div>
-
-                <!-- 3. NOUVELLE PERSONNE EN ATTENTE -->
-                <div class="user-mini-card active" onclick="showUser('Sarah Mansour', 'UAE', '5 800.00 $', 'EN ATTENTE')">
-                    <div style="font-weight: bold;">S. Mansour</div>
-                    <div style="color: var(--danger); font-size: 0.7rem;">● En attente</div>
-                </div>
-
-                <!-- 4. NOUVELLE PERSONNE EN ATTENTE -->
-                <div class="user-mini-card active" onclick="showUser('Alain Bashara', 'RDC', '940.00 $', 'EN ATTENTE')">
-                    <div style="font-weight: bold;">A. Bashara</div>
-                    <div style="color: var(--danger); font-size: 0.7rem;">● En attente</div>
-                </div>
+                <!-- Le reste sera généré par le script ci-dessous -->
             </div>
         </div>
     </div>
@@ -146,37 +128,45 @@ Voici le code mis à jour. J'ai ajouté 3 personnes spécifiques en attente just
     </div>
 
     <script>
-        const grid = document.getElementById('investor-grid');
-        const names = ["S. Al-Fayed", "L. Mendy", "H. Müller", "J. Wick", "A. Silva", "Y. Tanaka", "M. Kovac"];
-        const countries = ["UAE", "SEN", "GER", "USA", "BRA", "JPN", "CRO"];
-
-        // Remplissage du reste de la liste (44 restants pour faire 48 au total)
-        for(let i=0; i<44; i++) {
-            const n = names[i % names.length];
-            const p = countries[i % countries.length];
-            const gain = (Math.floor(Math.random() * 20000) + 3000).toLocaleString() + ".00 $";
-            
-            const card = document.createElement('div');
-            card.className = 'user-mini-card';
-            card.onclick = () => showUser(n, p, gain, "PAYÉ & CLÔTURÉ");
-            card.innerHTML = `
-                <div style="font-weight: bold;">${n}</div>
-                <div style="color: var(--success); font-size: 0.7rem;">● ${p} (Payé)</div>
-            `;
-            grid.appendChild(card);
-        }
-
         function showUser(name, origin, gain, status) {
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalOrigin').innerText = "Origine : " + origin;
             document.getElementById('modalGain').innerText = gain;
-            document.getElementById('modalStatus').innerText = status;
-            document.getElementById('modalStatus').style.color = (status === 'EN ATTENTE') ? 'var(--danger)' : 'var(--success)';
+            document.getElementById('modalStatus').innerText = "STATUT : " + status;
+            document.getElementById('modalStatus').style.color = status === 'PAYÉ' ? '#16a34a' : '#df2020';
             document.getElementById('userModal').style.display = 'flex';
+        }
+
+        const grid = document.getElementById('investor-grid');
+        
+        // Liste mise à jour des autres investisseurs
+        const updatedInvestors = [
+            { n: "K. Ibrahim", c: "Nigeria", g: "4 120.00 $", s: "PAYÉ" },
+            { n: "M. Zhang", c: "Chine", g: "12 500.00 $", s: "PAYÉ" },
+            { n: "A. Kouassi", c: "Côte d'Ivoire", g: "1 890.00 $", s: "EN ATTENTE" },
+            { n: "Elena R.", c: "Russie", g: "7 300.00 $", s: "PAYÉ" },
+            { n: "P. Mukasa", c: "Ouganda", g: "950.00 $", s: "EN ATTENTE" },
+            { n: "S. Al-Saoud", c: "Arabie S.", g: "25 000.00 $", s: "PAYÉ" },
+            { n: "J. Mwamba", c: "RDC", g: "3 400.00 $", s: "EN ATTENTE" }
+        ];
+
+        // Génération automatique pour compléter à 48
+        for(let i=0; i<47; i++) {
+            const data = updatedInvestors[i % updatedInvestors.length];
+            const card = document.createElement('div');
+            const isPending = data.s === "EN ATTENTE";
+            
+            card.className = `user-mini-card ${isPending ? 'active' : 'paid'}`;
+            card.onclick = () => showUser(data.n, data.c, data.g, data.s);
+            
+            card.innerHTML = `
+                <div style="font-weight: bold;">${data.n}</div>
+                <div style="color: ${isPending ? 'var(--danger)' : 'var(--success)'}; font-size: 0.7rem;">
+                    ● ${data.s.toLowerCase()}
+                </div>
+            `;
+            grid.appendChild(card);
         }
     </script>
 </body>
 </html>
-
-Voulez-vous modifier les noms ou les montants des trois personnes que j'ai ajoutées en attente ?
-
