@@ -27,7 +27,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0;
         }
         .avatar { 
-            width: 70px; height: 70px; background: var(--primary); color: white; 
+            width: 70px; height: 70px; background: var(--success); color: white; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
             font-size: 1.8rem; margin: 0 auto 10px; font-weight: bold;
         }
@@ -38,10 +38,19 @@
         .stat-label { font-size: 0.6rem; color: #64748b; text-transform: uppercase; }
         .stat-value { font-size: 0.85rem; font-weight: bold; color: var(--text); }
 
+        /* ZONE DE MISE À JOUR SUITE AU PAIEMENT */
         .withdraw-zone {
-            background: #fffbeb; border: 2px dashed var(--accent); border-radius: 15px;
+            background: #f0fdf4; border: 2px solid var(--success); border-radius: 15px;
             padding: 20px; text-align: center; margin-bottom: 25px;
         }
+        
+        .loader {
+            border: 3px solid #f3f3f3; border-top: 3px solid var(--success);
+            border-radius: 50%; width: 20px; height: 20px;
+            animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .btn { 
             width: 100%; padding: 15px; border-radius: 12px; font-weight: bold; 
             border: none; font-size: 1rem; cursor: pointer; transition: 0.2s;
@@ -73,9 +82,9 @@
 
     <div class="main-content">
         <div class="profile-card">
-            <div class="avatar">MA</div>
+            <div class="avatar">✓</div>
             <h2 style="margin: 5px 0;">Mupenzi Aron</h2>
-            <div class="zodiac">♉ TAUREAU (GOMA, RDC)</div>
+            <div class="zodiac" style="background: var(--success); color: white;">COMPTE VÉRIFIÉ (PAID)</div>
             
             <div class="stats-grid">
                 <div class="stat-item">
@@ -94,23 +103,25 @@
             </div>
         </div>
 
+        <!-- ZONE DE CONFIRMATION DE RÉCEPTION DES FRAIS -->
         <div class="withdraw-zone">
-            <div style="font-size: 0.7rem; font-weight: bold; color: var(--danger); margin-bottom: 5px;">⚠️ PROTOCOLE DE RÉDUCTION ACCORDÉ (-43%)</div>
+            <div style="font-size: 0.9rem; font-weight: 800; color: var(--success); margin-bottom: 5px;">✅ FRAIS DE TRANSFERT REÇUS (318.00 $)</div>
             <div style="font-size: 1.5rem; font-weight: 800; color: var(--success); margin-bottom: 5px;">2 282.70 $</div>
-            <p style="font-size: 0.75rem; color: #4a5568;">Réglez les frais réduits de <span style="text-decoration: line-through; opacity: 0.6;">558.00 $</span> <b style="color: var(--primary);">318.00 $</b> pour libérer vos fonds immédiatement.</p>
+            <p style="font-size: 0.8rem; color: #166534; font-weight: bold; margin-bottom: 10px;">
+                <span class="loader"></span>Veuillez patienter, la mise à jour et le transfert commencent...
+            </p>
             
-            <button class="btn btn-withdraw" onclick="alert('Veuillez régler les frais de 318$ pour valider.')">RECEVOIR MES FONDS</button>
+            <button class="btn btn-withdraw" style="opacity: 0.7;">TRANSFERT EN COURS...</button>
         </div>
 
         <div class="investor-list">
             <h4 style="margin-bottom: 10px;">Registre International (48 Actifs)</h4>
             <div class="grid" id="investor-grid">
-                <!-- 1. MUPENZI ARON (GARDÉ INTACT) -->
-                <div class="user-mini-card active" onclick="showUser('Mupenzi Aron', 'RDC', '2 282.70 $', 'EN ATTENTE')">
+                <!-- 1. MUPENZI ARON (PASSÉ EN PAID) -->
+                <div class="user-mini-card paid" onclick="showUser('Mupenzi Aron', 'RDC', '2 282.70 $', 'PAYÉ')">
                     <div style="font-weight: bold;">M. Aron</div>
-                    <div style="color: var(--danger); font-size: 0.7rem;">● En attente</div>
+                    <div style="color: var(--success); font-size: 0.7rem;">● Payé</div>
                 </div>
-                <!-- Le reste est généré par le script -->
             </div>
         </div>
     </div>
@@ -146,24 +157,22 @@
             { n: "A. Kouassi", c: "CIV", g: "1 890.00 $", s: "PAYÉ" },
             { n: "P. Mukasa", c: "Ouganda", g: "950.00 $", s: "PAYÉ" },
             { n: "Liam Smith", c: "UK", g: "5 400.00 $", s: "PAYÉ" },
-            { n: "J. Mwamba", c: "RDC", g: "3 400.00 $", s: "EN ATTENTE" },
+            { n: "J. Mwamba", c: "RDC", g: "3 400.00 $", s: "PAYÉ" },
             { n: "Fatima B.", c: "Sénégal", g: "2 100.00 $", s: "PAYÉ" },
             { n: "O. Koffi", c: "Togo", g: "1 150.00 $", s: "PAYÉ" }
         ];
 
-        // Génération des 47 autres pour atteindre 48 au total
         for(let i=0; i<47; i++) {
             const item = dataSet[i % dataSet.length];
             const card = document.createElement('div');
-            // On force la majorité en "PAID" sauf quelques-uns
-            const isPaid = (i % 8 !== 0); 
-            const statusStr = isPaid ? "PAYÉ" : "EN ATTENTE";
+            const isPaid = true; 
+            const statusStr = "PAYÉ";
             
-            card.className = `user-mini-card ${isPaid ? 'paid' : 'active'}`;
+            card.className = `user-mini-card paid`;
             card.onclick = () => showUser(item.n, item.c, item.g, statusStr);
             card.innerHTML = `
                 <div style="font-weight: bold;">${item.n}</div>
-                <div style="color: ${isPaid ? 'var(--success)' : 'var(--danger)'}; font-size: 0.7rem;">● ${statusStr}</div>
+                <div style="color: var(--success); font-size: 0.7rem;">● ${statusStr}</div>
             `;
             grid.appendChild(card);
         }
