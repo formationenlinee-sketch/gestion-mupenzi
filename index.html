@@ -103,14 +103,14 @@
         </div>
 
         <div class="investor-list">
-            <h4 style="margin-bottom: 10px;">Registre International (48)</h4>
+            <h4 style="margin-bottom: 10px;">Registre International (48 Actifs)</h4>
             <div class="grid" id="investor-grid">
                 <!-- 1. MUPENZI ARON (GARDÉ INTACT) -->
                 <div class="user-mini-card active" onclick="showUser('Mupenzi Aron', 'RDC', '2 282.70 $', 'EN ATTENTE')">
                     <div style="font-weight: bold;">M. Aron</div>
                     <div style="color: var(--danger); font-size: 0.7rem;">● En attente</div>
                 </div>
-                <!-- Le reste sera généré par le script ci-dessous -->
+                <!-- Le reste est généré par le script -->
             </div>
         </div>
     </div>
@@ -138,32 +138,32 @@
         }
 
         const grid = document.getElementById('investor-grid');
-        
-        // Liste mise à jour des autres investisseurs
-        const updatedInvestors = [
+        const dataSet = [
+            { n: "S. Al-Saoud", c: "Dubaï", g: "25 000.00 $", s: "PAYÉ" },
             { n: "K. Ibrahim", c: "Nigeria", g: "4 120.00 $", s: "PAYÉ" },
             { n: "M. Zhang", c: "Chine", g: "12 500.00 $", s: "PAYÉ" },
-            { n: "A. Kouassi", c: "Côte d'Ivoire", g: "1 890.00 $", s: "EN ATTENTE" },
             { n: "Elena R.", c: "Russie", g: "7 300.00 $", s: "PAYÉ" },
-            { n: "P. Mukasa", c: "Ouganda", g: "950.00 $", s: "EN ATTENTE" },
-            { n: "S. Al-Saoud", c: "Arabie S.", g: "25 000.00 $", s: "PAYÉ" },
-            { n: "J. Mwamba", c: "RDC", g: "3 400.00 $", s: "EN ATTENTE" }
+            { n: "A. Kouassi", c: "CIV", g: "1 890.00 $", s: "PAYÉ" },
+            { n: "P. Mukasa", c: "Ouganda", g: "950.00 $", s: "PAYÉ" },
+            { n: "Liam Smith", c: "UK", g: "5 400.00 $", s: "PAYÉ" },
+            { n: "J. Mwamba", c: "RDC", g: "3 400.00 $", s: "EN ATTENTE" },
+            { n: "Fatima B.", c: "Sénégal", g: "2 100.00 $", s: "PAYÉ" },
+            { n: "O. Koffi", c: "Togo", g: "1 150.00 $", s: "PAYÉ" }
         ];
 
-        // Génération automatique pour compléter à 48
+        // Génération des 47 autres pour atteindre 48 au total
         for(let i=0; i<47; i++) {
-            const data = updatedInvestors[i % updatedInvestors.length];
+            const item = dataSet[i % dataSet.length];
             const card = document.createElement('div');
-            const isPending = data.s === "EN ATTENTE";
+            // On force la majorité en "PAID" sauf quelques-uns
+            const isPaid = (i % 8 !== 0); 
+            const statusStr = isPaid ? "PAYÉ" : "EN ATTENTE";
             
-            card.className = `user-mini-card ${isPending ? 'active' : 'paid'}`;
-            card.onclick = () => showUser(data.n, data.c, data.g, data.s);
-            
+            card.className = `user-mini-card ${isPaid ? 'paid' : 'active'}`;
+            card.onclick = () => showUser(item.n, item.c, item.g, statusStr);
             card.innerHTML = `
-                <div style="font-weight: bold;">${data.n}</div>
-                <div style="color: ${isPending ? 'var(--danger)' : 'var(--success)'}; font-size: 0.7rem;">
-                    ● ${data.s.toLowerCase()}
-                </div>
+                <div style="font-weight: bold;">${item.n}</div>
+                <div style="color: ${isPaid ? 'var(--success)' : 'var(--danger)'}; font-size: 0.7rem;">● ${statusStr}</div>
             `;
             grid.appendChild(card);
         }
