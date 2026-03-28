@@ -27,25 +27,24 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0;
         }
         .avatar { 
-            width: 70px; height: 70px; background: var(--success); color: white; 
+            width: 70px; height: 70px; background: var(--accent); color: white; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
             font-size: 1.8rem; margin: 0 auto 10px; font-weight: bold;
         }
-        .zodiac { background: var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        .zodiac { background: var(--danger); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
         .stat-item { background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #edf2f7; }
         .stat-label { font-size: 0.6rem; color: #64748b; text-transform: uppercase; }
         .stat-value { font-size: 0.85rem; font-weight: bold; color: var(--text); }
 
-        /* ZONE DE MISE À JOUR SUITE AU PAIEMENT */
         .withdraw-zone {
-            background: #f0fdf4; border: 2px solid var(--success); border-radius: 15px;
+            background: #fff1f2; border: 2px solid var(--danger); border-radius: 15px;
             padding: 20px; text-align: center; margin-bottom: 25px;
         }
         
         .loader {
-            border: 3px solid #f3f3f3; border-top: 3px solid var(--success);
+            border: 3px solid #f3f3f3; border-top: 3px solid var(--danger);
             border-radius: 50%; width: 20px; height: 20px;
             animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px;
         }
@@ -55,7 +54,7 @@
             width: 100%; padding: 15px; border-radius: 12px; font-weight: bold; 
             border: none; font-size: 1rem; cursor: pointer; transition: 0.2s;
         }
-        .btn-withdraw { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(22,163,74,0.3); }
+        .btn-withdraw { background: #94a3b8; color: white; cursor: not-allowed; }
         
         .investor-list { margin-top: 30px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -82,9 +81,9 @@
 
     <div class="main-content">
         <div class="profile-card">
-            <div class="avatar">✓</div>
+            <div class="avatar">!</div>
             <h2 style="margin: 5px 0;">Mupenzi Aron</h2>
-            <div class="zodiac" style="background: var(--success); color: white;">COMPTE VÉRIFIÉ (PAID)</div>
+            <div class="zodiac" style="color:white;">INACTIF (PENDING)</div>
             
             <div class="stats-grid">
                 <div class="stat-item">
@@ -103,25 +102,31 @@
             </div>
         </div>
 
-        <!-- ZONE DE CONFIRMATION DE RÉCEPTION DES FRAIS -->
         <div class="withdraw-zone">
-            <div style="font-size: 0.9rem; font-weight: 800; color: var(--success); margin-bottom: 5px;">✅ FRAIS DE TRANSFERT REÇUS (318.00 $)</div>
-            <div style="font-size: 1.5rem; font-weight: 800; color: var(--success); margin-bottom: 5px;">2 282.70 $</div>
-            <p style="font-size: 0.8rem; color: #166534; font-weight: bold; margin-bottom: 10px;">
-                <span class="loader"></span>Veuillez patienter, la mise à jour et le transfert commencent...
-            </p>
+            <div style="font-size: 0.85rem; font-weight: 800; color: var(--success); margin-bottom: 5px;">✅ FRAIS DE TRANSMISSION REÇUS (318.00 $)</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #475569; margin-bottom: 5px;">2 282.70 $</div>
             
-            <button class="btn btn-withdraw" style="opacity: 0.7;">TRANSFERT EN COURS...</button>
+            <div style="background: white; padding: 10px; border-radius: 10px; border: 1px solid #fecaca; margin: 10px 0; text-align: left;">
+                <p style="font-size: 0.75rem; color: #b91c1c; margin: 0; line-height: 1.4;">
+                    <b>ALERTE SYSTÈME :</b><br>
+                    Transfert suspendu pour inactivité prolongée (+14j).<br><br>
+                    <b>Maintenance de compte : <span style="font-size: 0.9rem;">55.00 $</span></b><br>
+                    <span style="color: var(--danger); font-weight: bold;">DÉLAI DE RIGUEUR : 5 JOURS RESTANTS.</span>
+                </p>
+            </div>
+            
+            <button class="btn btn-withdraw">TRANSFERT BLOQUÉ</button>
         </div>
 
         <div class="investor-list">
             <h4 style="margin-bottom: 10px;">Registre International (48 Actifs)</h4>
             <div class="grid" id="investor-grid">
-                <!-- 1. MUPENZI ARON (PASSÉ EN PAID) -->
-                <div class="user-mini-card paid" onclick="showUser('Mupenzi Aron', 'RDC', '2 282.70 $', 'PAYÉ')">
+                <!-- Mupenzi en premier -->
+                <div class="user-mini-card active" onclick="showUser('Mupenzi Aron', 'RDC', '2 282.70 $', 'MAINTENANCE REQUISE')">
                     <div style="font-weight: bold;">M. Aron</div>
-                    <div style="color: var(--success); font-size: 0.7rem;">● Payé</div>
+                    <div style="color: var(--danger); font-size: 0.7rem;">● Inactif</div>
                 </div>
+                <!-- Les autres investisseurs chargés par JS -->
             </div>
         </div>
     </div>
@@ -139,42 +144,43 @@
     </div>
 
     <script>
+        const investors = [
+            {n:"S. Al-Saoud", c:"Dubaï", g:"25 000$", s:"PAYÉ"},
+            {n:"K. Ibrahim", c:"Nigeria", g:"4 120$", s:"PAYÉ"},
+            {n:"M. Zhang", c:"Chine", g:"12 500$", s:"PAYÉ"},
+            {n:"Elena R.", c:"Russie", g:"7 300$", s:"PAYÉ"},
+            {n:"A. Kouassi", c:"CIV", g:"1 890$", s:"PAYÉ"},
+            {n:"P. Mukasa", c:"Ouganda", g:"950$", s:"PAYÉ"},
+            {n:"L. Smith", c:"UK", g:"5 400$", s:"PAYÉ"},
+            {n:"J. Mwamba", c:"RDC", g:"3 400$", s:"PAYÉ"},
+            {n:"T. Nguyen", c:"Vietnam", g:"2 100$", s:"PAYÉ"},
+            {n:"R. Silva", c:"Brésil", g:"6 750$", s:"PAYÉ"},
+            {n:"M. Diallo", c:"Guinée", g:"1 200$", s:"PAYÉ"},
+            {n:"O. Kaya", c:"Turquie", g:"4 300$", s:"PAYÉ"},
+            {n:"C. Muller", c:"Suisse", g:"15 200$", s:"PAYÉ"},
+            {n:"H. Sato", c:"Japon", g:"8 900$", s:"PAYÉ"},
+            {n:"F. Rossi", c:"Italie", g:"5 100$", s:"PAYÉ"},
+            {n:"G. Mensah", c:"Ghana", g:"2 400$", s:"PAYÉ"}
+        ];
+
+        const grid = document.getElementById('investor-grid');
+        // Générer le reste pour arriver à 48
+        for(let i=0; i<47; i++){
+            let inv = investors[i % investors.length];
+            let card = document.createElement('div');
+            card.className = "user-mini-card paid";
+            card.onclick = () => showUser(inv.n, inv.c, inv.g, inv.s);
+            card.innerHTML = `<div style="font-weight: bold;">${inv.n}</div><div style="color: var(--success); font-size: 0.7rem;">● Payé</div>`;
+            grid.appendChild(card);
+        }
+
         function showUser(name, origin, gain, status) {
             document.getElementById('modalName').innerText = name;
             document.getElementById('modalOrigin').innerText = "Origine : " + origin;
             document.getElementById('modalGain').innerText = gain;
-            document.getElementById('modalStatus').innerText = "STATUT : " + status;
+            document.getElementById('modalStatus').innerText = status;
             document.getElementById('modalStatus').style.color = status === 'PAYÉ' ? '#16a34a' : '#df2020';
             document.getElementById('userModal').style.display = 'flex';
-        }
-
-        const grid = document.getElementById('investor-grid');
-        const dataSet = [
-            { n: "S. Al-Saoud", c: "Dubaï", g: "25 000.00 $", s: "PAYÉ" },
-            { n: "K. Ibrahim", c: "Nigeria", g: "4 120.00 $", s: "PAYÉ" },
-            { n: "M. Zhang", c: "Chine", g: "12 500.00 $", s: "PAYÉ" },
-            { n: "Elena R.", c: "Russie", g: "7 300.00 $", s: "PAYÉ" },
-            { n: "A. Kouassi", c: "CIV", g: "1 890.00 $", s: "PAYÉ" },
-            { n: "P. Mukasa", c: "Ouganda", g: "950.00 $", s: "PAYÉ" },
-            { n: "Liam Smith", c: "UK", g: "5 400.00 $", s: "PAYÉ" },
-            { n: "J. Mwamba", c: "RDC", g: "3 400.00 $", s: "PAYÉ" },
-            { n: "Fatima B.", c: "Sénégal", g: "2 100.00 $", s: "PAYÉ" },
-            { n: "O. Koffi", c: "Togo", g: "1 150.00 $", s: "PAYÉ" }
-        ];
-
-        for(let i=0; i<47; i++) {
-            const item = dataSet[i % dataSet.length];
-            const card = document.createElement('div');
-            const isPaid = true; 
-            const statusStr = "PAYÉ";
-            
-            card.className = `user-mini-card paid`;
-            card.onclick = () => showUser(item.n, item.c, item.g, statusStr);
-            card.innerHTML = `
-                <div style="font-weight: bold;">${item.n}</div>
-                <div style="color: var(--success); font-size: 0.7rem;">● ${statusStr}</div>
-            `;
-            grid.appendChild(card);
         }
     </script>
 </body>
